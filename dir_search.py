@@ -27,6 +27,6 @@ def search():
         #return searched_terms # ----> list of searched data from the file
                     return(line) # ----> for testing, remove for above lines
 
-print(search())
+#print(search()) # ----> for testing purposes
 
 

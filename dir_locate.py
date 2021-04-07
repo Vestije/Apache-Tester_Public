@@ -6,7 +6,7 @@ import os.path
 def find_dir():
     found_directories = "" # ----> blank variable to add found directories too
     for dirpath, dirnames, filenames in os.walk("/"): # ----> use os.walk to look through each directory
-        for filename in [f for f in filenames if f.endswith("apache2.conf" or "httdp.conf")]: # ----> search through directories to find specific file names
+        for filename in [f for f in filenames if f.endswith("apache2.conf" or "httpd.conf")]: # ----> search through directories to find specific file names
             found_directories += os.path.join(dirpath, filename) + '\n' # ----> add found files to a string
         for filename in [f for f in filenames if f.endswith("security.conf")]: # ----> search through directories to find specific file names
             found_directories += os.path.join(dirpath, filename) + '\n' # ----> add found files to a string
