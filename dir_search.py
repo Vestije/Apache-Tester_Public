@@ -27,6 +27,7 @@ def search():
         #return searched_terms # ----> list of searched data from the file
                     return(line) # ----> for testing, remove for above lines
 
-#print(search()) # ----> for testing purposes
+if __name__ == "__main__":
+    print(search())
 
 
