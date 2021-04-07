@@ -29,6 +29,7 @@ def get_ver():
         return(version_info)
 
 
-#print(get_ver()) # ----> for testing
+if __name__ == "__main__":
+    print(get_ver())
 
     
