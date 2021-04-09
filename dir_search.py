@@ -14,7 +14,7 @@ def setting_valid(line, rec_dict, setting,correct, incorrect):
     
     if line[0] == setting: #Check if 1st element (the Setting) is equal to the setting passed in as the variable to check
         if rec_dict[setting] == line[1].strip(): #If it is the correct setting check if the value matches the recommended
-            correct.append(str.format('{0} is set to:{1}',setting.ljust(18),rec_dict[setting].rjust(5))) #If it does append to correct list
+            correct.append(str.format('{0} is set to:{1}',setting.ljust(18),rec_dict[setting].rjust(25))) #If it does append to correct list
 
         else: #It doesn't match the recommended setting - append to incorrect list.
             incorrect.append(str.format('{0} is set to :{1}, the recommended setting is: {2}', setting.ljust(22),line[1].strip().rjust(25),rec_dict[setting].rjust(25)))
