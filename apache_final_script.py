@@ -4,10 +4,19 @@ from os import system
 from Get_Recommendations import get_settings
 from Print_Report import report
 from dir_search import search
-
 from apache_version import get_ver
 from dir_locate import find_dir
 from dir_search import search
+import argparse
+#import shutil
+
+apache_parser = argparse.ArgumentParser(prog='Apache Configuration Tester',description='Check if Apache configuration is up to best practices standard.')
+apache_parser.add_argument('-c','--change', help='Allows the script to automatically change settings to match best practices.', action='store_true')
+apache_parser.add_argument('-p','--printReport', help='Prints a report showing the items meeting industry best practices, followed by those that don\'t.', action='store_true')
+apache_parser.add_argument('-s','--silent', help='Turns off confirmation prompts before making each change.', action='store_true')
+apache_parser.add_argument('-v','--verbose',help='Enables verbose mode.', action='store_true')
+
+args = apache_parser.parse_args()
 
 def final_output():
     system('clear') #Clear the screen
@@ -37,7 +46,8 @@ def final_output():
     search(settings, correct_settings, incorrect_settings)
     
     #Print a report
-    report(correct_settings, incorrect_settings)
+    if args.printReport:  
+        report(correct_settings, incorrect_settings)
     
     #print(f'\n{get_ver()}')
     #print(f'\nYour files are located in:\n{find_dir()}')
