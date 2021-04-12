@@ -48,7 +48,12 @@ def final_output():
     #Print a report
     if args.printReport:  
         report(correct_settings, incorrect_settings)
-    
+    if args.change:
+        print('Change feature not yet implemented')
+    if args.verbose:
+        print('Verbose feature not yet implemented')
+    if args.silent:
+        print('Silent feature not yet implemented')
     #print(f'\n{get_ver()}')
     #print(f'\nYour files are located in:\n{find_dir()}')
     ### no code yet for search() ###
