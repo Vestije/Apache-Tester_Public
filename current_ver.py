@@ -11,7 +11,7 @@ def strip_ver(version_string):
             output += ch
         elif ch == '.':
             output += ch
-     return ch
+    return ch
 
 def get_installed_ver():
     
@@ -45,10 +45,11 @@ def compare_versions():
         return False
 
 def current_ver():
-    process1 = requests.get('https://mirror.jframeworks.com/apache//httpd/')
+    process1 = requests.get('https://downloads.apache.org/httpd/')
     webtext = process1.text
 
     return((webtext.split('IS-'))[1].split('\"')[0])
 
 if __name__ == "__main__":
     print(current_ver())
+
