@@ -55,7 +55,7 @@ def compare_versions():
         return False
 
 def get_current_ver():
-    process1 = requests.get('https://mirror.jframeworks.com/apache//httpd/')
+    process1 = requests.get('https://ftp.wayne.edu/apache//httpd/')
     webtext = process1.text
     current_version = (webtext.split('IS-'))[1].split('\"')[0]
 
