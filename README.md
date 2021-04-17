@@ -42,7 +42,7 @@ machine (mainly apache2.conf/ httpd.conf and security.conf apache files). These 
 scanned for the information below.
 
 
-=  Apache Version  =
+  Apache Version  
 ====================
 
 Latest versions of software can include important updates such as security patches and bug fixes. 
@@ -50,8 +50,6 @@ It is important to stay up to date with new releases.
 
 Apache_Tester checks your currently installed version of apache2 or httpd and compares it to 
 the most recent release
-
----------------------------------------------------------------------------------------------------
 
 
 =  Server-Info  =
@@ -65,10 +63,9 @@ actors.
 
 Apache_Tester checks for the “<Location /server-info>” setting and will commented it out.
 
----------------------------------------------------------------------------------------------------
 
 
-=  Signature  =
+  Signature  
 ===============
 
 While turned on, ServerSignature provides the server version number and server name to the footer line. 
@@ -76,10 +73,9 @@ While turned on, ServerSignature provides the server version number and server n
 Apache_Tester checks for the “ServerSignature” option in the security configuration file and will 
 set it to “off”.
 
----------------------------------------------------------------------------------------------------
 
 
-=  Banner  =
+  Banner  
 ============
 
 When enabled, this option includes a description of the generic OS-type of the server as well as 
@@ -88,10 +84,9 @@ information about compiled-in modules in the banner returned to the client.
 Apache_Tester checks for the “ServerTokens” option in the security configuration file and will 
 set it to “Prod".
 
----------------------------------------------------------------------------------------------------
 
 
-=  Trace HTTP Requests  =
+  Trace HTTP Requests  
 =========================
 
 Trace is a HTTP request method used for debugging that sends back an input to the user. This method 
@@ -101,10 +96,9 @@ credentials via the header.
 Apache_Tester checks for the “TraceEnable” option in the security configuration file and will set it 
 to “off”.
 
----------------------------------------------------------------------------------------------------
 
 
-=  Timeout value configuration  =
+  Timeout value configuration  
 =================================
 
 A server connection timeout occurs when a server is taking too long to reply to a data request. 
@@ -113,5 +107,3 @@ By default, apache sets this number to 300, which is vulnerable to Slow Loris an
 
 Apache_Tester checks the configuration file for the current timeout setting, and will change the duration 
 to 60 seconds.
-
----------------------------------------------------------------------------------------------------
