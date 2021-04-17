@@ -99,7 +99,7 @@ to “off”.
 
 
 
-  Timeout value configuration  
+  Timeout Value Configuration  
 =================================
 
 A server connection timeout occurs when a server is taking too long to reply to a data request. 
