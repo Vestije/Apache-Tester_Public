@@ -23,3 +23,6 @@ def conf_backup():
                 copyfile(item,current_dir + '/security.original.back') #copy of security.conf
             elif path.exists( current_dir + '/security.original.back') == True:  #checks if security.original.back exists
                 copyfile(item,current_dir + '/security.updated.back') #copy of security.conf
+
+if __name__ == "__main__":
+    conf_backup()
