@@ -52,7 +52,8 @@ Apache_Tester checks your currently installed version of apache2 or httpd and co
 the most recent release
 
 
-=  Server-Info  =
+
+  Server-Info  
 =================
 
 Displays information about the Apache configuration when the /server-info page is accessed from 
@@ -90,8 +91,8 @@ set it to “Prod".
 =========================
 
 Trace is a HTTP request method used for debugging that sends back an input to the user. This method 
-creates the possibility for security vulnerabilities that could be exploited to access cookies or website 
-credentials via the header.
+creates the possibility for security vulnerabilities that could be exploited to access cookies or 
+website credentials via the header.
 
 Apache_Tester checks for the “TraceEnable” option in the security configuration file and will set it 
 to “off”.
