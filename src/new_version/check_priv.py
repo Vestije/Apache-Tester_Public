@@ -15,7 +15,8 @@ def find_dir():
 
 
 if __name__ == "__main__":
-    found_directories = find_dir()
+    directories = find_dir()
+    found_directories = directories.splitlines()
 
     try:
         filehandle = open(found_directories[0], 'w' )
