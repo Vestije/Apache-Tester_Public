@@ -67,7 +67,7 @@ apache_conf = []
 security_conf = []
 
 
-def find_dir(): ##############################
+def find_dir():
     global found_directories # ----> blank variable to add found directories too
     global prog_bar
     for dirpath, dirnames, filenames in os.walk("/"): # ----> use os.walk to look through each directory
@@ -90,7 +90,7 @@ def strip_ver(version_string):
     return output
 
 
-def get_installed_ver(): ##############################
+def get_installed_ver():
     global installed_version
     global found_directories
     version_info = ''
@@ -103,7 +103,7 @@ def get_installed_ver(): ##############################
             for line in list_apache_output:
                 if 'version' in line:
                     version_info += line
-            installed_version = strip_ver(version_info) ##############################
+            installed_version = strip_ver(version_info)
             break
         elif 'httpd.conf' in each_dir:
             process2 = subprocess.run(['httpd', '-v'], capture_output=True) # ----> subprocess version; run the subprocess, capture output
@@ -112,7 +112,7 @@ def get_installed_ver(): ##############################
             for line in list_httpd_output:
                 if 'version' in line:
                     version_info += line#----->
-            installed_version = strip_ver(version_info) ##############################
+            installed_version = strip_ver(version_info)
             break
 
 
@@ -137,7 +137,7 @@ def print_list(theList):
         print('{: ^100}'.format(line)) #Print each line
 
 
-def conf_backup(): ##############################
+def conf_backup():
     global found_directories
     current_dir = os.path.dirname(os.path.realpath(__file__)) #current directory path of backup.py    
     if os.path.isdir(current_dir + '/backup') == False: #checks if there is a backup folder
@@ -166,15 +166,7 @@ def print_header():
     print('{:*^100}'.format(' ╔═╗╔═╗╔═╗╔═╗╦ ╦╔═╗   ╔╦╗╔═╗╔═╗╔╦╗╔═╗╦═╗ '))
     print('{:*^100}'.format(' ╠═╣╠═╝╠═╣║  ╠═╣║╣     ║ ║╣ ╚═╗ ║ ║╣ ╠╦╝ '))
     print('{:*^100}'.format(' ╩ ╩╩  ╩ ╩╚═╝╩ ╩╚═╝    ╩ ╚═╝╚═╝ ╩ ╚═╝╩╚═ '))
-  
-    #*************************************************************************
-    #**** The following 3 lines just pri#----->sole window.  Remove the # before ****
-    #**** each line to print them and comment out the three above instead ****
-    #*************************************************************************
 
-    #print('╔═╗╔═╗╔═╗╔═╗╦ ╦╔═╗   ╔╦╗╔═╗╔═╗╔╦╗╔═╗╦═╗'.center(shutil.get_terminal_size().columns))
-    #print('╠═╣╠═╝╠═╣║  ╠═╣║╣     ║ ║╣ ╚═╗ ║ ║╣ ╠╦╝'.center(shutil.get_terminal_size().columns))
-    #print('╩ ╩╩  ╩ ╩╚═╝╩ ╩╚═╝    ╩ ╚═╝╚═╝ ╩ ╚═╝╩╚═'.center(shutil.get_terminal_size().columns))
     print('*'*100)
     print('\n'* 2)
 
@@ -339,7 +331,7 @@ def main_program():
     prog_bar.total = 38879
     system('clear') #Clear the screen
 
-    find_dir() ##############################
+    find_dir()
     if args.change:
         try:
             filehandle = open(found_directories[0], 'w' )
