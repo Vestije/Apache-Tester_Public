@@ -12,11 +12,15 @@ def print_header():
     system('clear')
     print (colors.GREEN + '-'*100 + colors.ENDC)
     print (colors.GREEN + '-'*100 + colors.ENDC)
+
     print(colors.GREEN +'{:/^113}'.format(colors.BLUE +' ╔═╗╔═╗╔═╗╔═╗╦ ╦╔═╗   ╔╦╗╔═╗╔═╗╔╦╗╔═╗╦═╗ ' + colors.ENDC + colors.GREEN))
     print(colors.GREEN +'{:\^113}'.format(colors.BLUE +' ╠═╣╠═╝╠═╣║  ╠═╣║╣     ║ ║╣ ╚═╗ ║ ║╣ ╠╦╝ '+ colors.ENDC + colors.GREEN))
     print(colors.GREEN +'{:/^113}'.format(colors.BLUE +' ╩ ╩╩  ╩ ╩╚═╝╩ ╩╚═╝    ╩ ╚═╝╚═╝ ╩ ╚═╝╩╚═ '+ colors.ENDC + colors.GREEN))
+    
     print (colors.GREEN + '-'*100 + colors.ENDC)
     print (colors.GREEN + '-'*100 + colors.ENDC)
+
+    #sys.stdout.write('\033[1;34m') #make all following text blue, may need to be added to main() after print_header() is called
 
 if __name__ == "__main__":
     print_header()
