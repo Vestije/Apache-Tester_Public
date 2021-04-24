@@ -62,13 +62,13 @@ settings_dict = {}
 current_version = ''
 installed_version = ''
 modified_list = []
-found_directories = []
+found_directories = [] # blank variable to add found directories too
 apache_conf = []
 security_conf = []
 
 
 def find_dir():
-    global found_directories # ----> blank variable to add found directories too
+    global found_directories 
     global prog_bar
     for dirpath, dirnames, filenames in os.walk("/"): # ----> use os.walk to look through each directory
         prog_bar.PrintMe()
@@ -161,14 +161,25 @@ def conf_backup():
 
 
 def print_header():
-    system('clear') #Clear the screen
-    print('*'*100)	
-    print('{:*^100}'.format(' ╔═╗╔═╗╔═╗╔═╗╦ ╦╔═╗   ╔╦╗╔═╗╔═╗╔╦╗╔═╗╦═╗ '))
-    print('{:*^100}'.format(' ╠═╣╠═╝╠═╣║  ╠═╣║╣     ║ ║╣ ╚═╗ ║ ║╣ ╠╦╝ '))
-    print('{:*^100}'.format(' ╩ ╩╩  ╩ ╩╚═╝╩ ╩╚═╝    ╩ ╚═╝╚═╝ ╩ ╚═╝╩╚═ '))
+    class colors:
+        RED = '\033[31m'
+        ENDC = '\033[m'
+        GREEN = '\033[32m'
+        YELLOW = '\033[33m'
+        BLUE = '\033[34m'
+    
+    system('clear')
+    print (colors.GREEN + '-'*100 + colors.ENDC)
+    print (colors.GREEN + '-'*100 + colors.ENDC)
 
-    print('*'*100)
-    print('\n'* 2)
+    print(colors.GREEN +'{:/^113}'.format(colors.BLUE +' ╔═╗╔═╗╔═╗╔═╗╦ ╦╔═╗   ╔╦╗╔═╗╔═╗╔╦╗╔═╗╦═╗ ' + colors.ENDC + colors.GREEN))
+    print(colors.GREEN +'{:\^113}'.format(colors.BLUE +' ╠═╣╠═╝╠═╣║  ╠═╣║╣     ║ ║╣ ╚═╗ ║ ║╣ ╠╦╝ '+ colors.ENDC + colors.GREEN))
+    print(colors.GREEN +'{:/^113}'.format(colors.BLUE +' ╩ ╩╩  ╩ ╩╚═╝╩ ╩╚═╝    ╩ ╚═╝╚═╝ ╩ ╚═╝╩╚═ '+ colors.ENDC + colors.GREEN))
+    
+    print (colors.GREEN + '-'*100 + colors.ENDC)
+    print (colors.GREEN + '-'*100 + colors.ENDC)
+
+    sys.stdout.write('\033[1;34m') #make all following text blue
 
 
 def report():
@@ -281,22 +292,22 @@ def search():
         for line in conf_file.readlines(): #Loop through each line in the file looking for the current setting being searched for
             if prog_bar.iteration < prog_bar.total: #Check if the iteration variable is less than or equal to the total number of iterations
                 prog_bar.PrintMe()
-                if line[0] != '#' and line[0] != '\n' and line[0] != '<' and not line.startswith('	'):
-                    if line.split(' ')[0] in settings_dict.keys():
-                        setting_valid(line, line.split(' ')[0])
-                    else:
-                        modified_list.append(line)
+            if line[0] != '#' and line[0] != '\n' and line[0] != '<' and not line.startswith('	'):
+                if line.split(' ')[0] in settings_dict.keys():
+                    setting_valid(line, line.split(' ')[0])
                 else:
+                    modified_list.append(line)
+            else:
                     modified_list.append(line) 
         modified_list.append('~~~~~~~~~~')  # ----> separator between apache2/httpd and security.conf files.              
         with open('/etc/apache2/conf-enabled/security.conf','r') as conf_file: #Open the file to search for settings
             for line in conf_file.readlines(): #Loop through each line in the file looking for the current setting being searched for
                 if prog_bar.iteration < prog_bar.total: #Check if the iteration variable is less than or equal to the total number of iterations
                     prog_bar.PrintMe()
-                    if line[0] != '#' and line[0] != '\n' and line[0] != '<' and line.startswith:
-                        setting_valid(line, line.split(' ')[0])
-                    else:
-                        modified_list.append(line)                              
+                if line[0] != '#' and line[0] != '\n' and line[0] != '<' and line.startswith:
+                    setting_valid(line, line.split(' ')[0])
+                else:
+                    modified_list.append(line)                              
 
 
 def write_file(in_list, filename):
@@ -363,4 +374,3 @@ def main_program():
 
 if __name__ == "__main__":
     main_program() 
-
