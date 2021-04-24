@@ -341,7 +341,8 @@ def main_program():
     global found_directories
     prog_bar.total = 38879
     system('clear') #Clear the screen
-
+    sys.stdout.write('\033[1;34m')
+    
     find_dir()
     if args.change:
         try:
