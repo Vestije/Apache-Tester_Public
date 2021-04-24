@@ -38,13 +38,17 @@ class ProgressBar:
 
     def PrintMe(self):
         self.iteration += 1
-        percent = ("{0:." + str(self.decimals) + "f}").format(100 * (self.iteration / float(self.total))) #Set the current completion percentage
-        filledLength = int(self.length * self.iteration // self.total) #Get the ammount the bar should be filled
-        bar = self.fill * filledLength + '-' * (self.length - filledLength) # Fill the bar with the completed blocks and - for uncompleted blocks
-        print(f'{self.prefix} |{bar}| {percent}% {self.suffix}', end = self.printEnd) #Print the formatted progress bar
+        if self.iteration < self.total:
+            percent = ("{0:." + str(self.decimals) + "f}").format(100 * (self.iteration / float(self.total))) #Set the current completion percentage
+            filledLength = int(self.length * self.iteration // self.total) #Get the ammount the bar should be filled
+            bar = self.fill * filledLength + '-' * ((self.length - filledLength)-1) # Fill the bar with the completed blocks and - for uncompleted blocks
+            print(f'{self.prefix} |{bar}| {percent}% {self.suffix}', end = self.printEnd) #Print the formatted progress bar
+        elif self.iteration > self.total:
+            self.iteration = self.total - 1 
+        else:
+            self.iteration = self.total
         time.sleep(self.sleeping)
-        if self.iteration == self.total:
-            print()
+        
 
 
 apache_parser = argparse.ArgumentParser(prog='Apache Configuration Tester',description='Check if Apache configuration is up to best practices standard.')
@@ -339,7 +343,10 @@ def split_list():
 def main_program():
     global current_version
     global found_directories
-    prog_bar.total = 38879
+    if args.change:
+        prog_bar.total = 43003
+    else:
+        prog_bar.total = 38779
     system('clear') #Clear the screen
     sys.stdout.write('\033[1;34m')
     
@@ -371,7 +378,8 @@ def main_program():
         split_list()
         write_file(security_conf,'security.conf')
         write_file(apache_conf,'apache2.conf')
-
+    #print(prog_bar.iteration)
 
 if __name__ == "__main__":
     main_program() 
+
