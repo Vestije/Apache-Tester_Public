@@ -81,7 +81,8 @@ def find_dir():
             found_directories.append(os.path.join(dirpath, filename)) # ----> add found files to the list
         for filename in [f for f in filenames if f.endswith("security.conf")]: # ----> search through directories to find specific file names
             prog_bar.PrintMe()
-            found_directories.append(os.path.join(dirpath, filename)) # ----> add found files to the list 
+            if 'enabled' not in dirpath: # only look at conf-avaliable for security files, conf-enabled only contains links to the actual files
+                found_directories.append(os.path.join(dirpath, filename)) # add found files to the list 
 
 
 def strip_ver(version_string):
@@ -157,7 +158,7 @@ def conf_backup():
         elif path.exists( current_dir + '/backup/httpd.original.back') == True: #checks if httpd.original.back exists
             copyfile(found_directories[0],current_dir + '/backup/httpd.updated.back') #copy of httpd.conf
     for item in found_directories:
-        if item.endswith('/conf-enabled/security.conf'):
+        if item.endswith('security.conf'):
             if path.exists( current_dir + '/backup/security.original.back') == False:  #checks if security.original.back exists
                 copyfile(item,current_dir + '/backup/security.original.back') #copy of security.conf
             elif path.exists( current_dir + '/backup/security.original.back') == True:  #checks if security.original.back exists
@@ -166,10 +167,10 @@ def conf_backup():
 
 def print_header():
     class colors:
-        RED = '\033[31m'
+        #RED = '\033[31m'
         ENDC = '\033[m'
         GREEN = '\033[32m'
-        YELLOW = '\033[33m'
+        #YELLOW = '\033[33m'
         BLUE = '\033[34m'
     
     system('clear')
@@ -292,7 +293,7 @@ def search():
 
     if prog_bar.iteration < prog_bar.total: #Check if the iteration variable is less than or equal to the total number of iterations
         prog_bar.PrintMe()
-    with open('/etc/apache2/apache2.conf','r') as conf_file: #Open the file to search for settings
+    with open(found_directories[0],'r') as conf_file: #Open the file to search for settings
         for line in conf_file.readlines(): #Loop through each line in the file looking for the current setting being searched for
             if prog_bar.iteration < prog_bar.total: #Check if the iteration variable is less than or equal to the total number of iterations
                 prog_bar.PrintMe()
@@ -304,7 +305,7 @@ def search():
             else:
                     modified_list.append(line) 
         modified_list.append('~~~~~~~~~~')  # ----> separator between apache2/httpd and security.conf files.              
-        with open('/etc/apache2/conf-enabled/security.conf','r') as conf_file: #Open the file to search for settings
+        with open(found_directories[1],'r') as conf_file: #Open the file to search for settings
             for line in conf_file.readlines(): #Loop through each line in the file looking for the current setting being searched for
                 if prog_bar.iteration < prog_bar.total: #Check if the iteration variable is less than or equal to the total number of iterations
                     prog_bar.PrintMe()
