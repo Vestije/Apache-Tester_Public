@@ -1,4 +1,4 @@
-ServerSignature:off
+ServerSignature:Off
 ServerTokens:Prod
 TraceEnable:Off
 Timeout:60
