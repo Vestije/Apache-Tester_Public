@@ -147,23 +147,22 @@ def conf_backup():
     current_dir = os.path.dirname(os.path.realpath(__file__)) #current directory path of backup.py    
     if os.path.isdir(current_dir + '/backup') == False: #checks if there is a backup folder
         os.mkdir(current_dir + '/backup') #makes a backup folder
-    if found_directories[0].endswith('apache2.conf'):
-        if path.exists( current_dir + '/backup/apache2.original.back') == False: #checks if apache2.original.back exists
-            copyfile(found_directories[0],current_dir + '/backup/apache2.original.back') #copy of apache2.conf
-        elif path.exists( current_dir + '/backup/apache2.original.back') == True: #checks if apache2.original.back exists
-            copyfile(found_directories[0],current_dir + '/backup/apache2.updated.back') #copy of apache2.conf
-    elif found_directories[0].endswith('httpd.conf'):
-        if path.exists( current_dir + '/backup/httpd.original.back') == False: #checks if httpd.original.back exists
-            copyfile(found_directories[0],current_dir + '/backup/httpd.original.back') #copy of httpd.conf
-        elif path.exists( current_dir + '/backup/httpd.original.back') == True: #checks if httpd.original.back exists
-            copyfile(found_directories[0],current_dir + '/backup/httpd.updated.back') #copy of httpd.conf
     for item in found_directories:
         if item.endswith('security.conf'):
             if path.exists( current_dir + '/backup/security.original.back') == False:  #checks if security.original.back exists
                 copyfile(item,current_dir + '/backup/security.original.back') #copy of security.conf
             elif path.exists( current_dir + '/backup/security.original.back') == True:  #checks if security.original.back exists
                 copyfile(item,current_dir + '/backup/security.updated.back') #copy of security.conf
-
+        if item.endswith('apache2.conf'):
+            if path.exists( current_dir + '/backup/apache2.original.back') == False:  #checks if security.original.back exists
+                copyfile(item,current_dir + '/backup/apache2.original.back') #copy of security.conf
+            elif path.exists( current_dir + '/backup/apache2.original.back') == True:  #checks if security.original.back exists
+                copyfile(item,current_dir + '/backup/apache2.updated.back') #copy of security.conf
+        if item.endswith('httpd.conf'):
+            if path.exists( current_dir + '/backup/httpd.original.back') == False:  #checks if security.original.back exists
+                copyfile(item,current_dir + '/backup/httpd.original.back') #copy of security.conf
+            elif path.exists( current_dir + '/backup/httpd.original.back') == True:  #checks if security.original.back exists
+                copyfile(item,current_dir + '/backup/httpd.updated.back') #copy of security.conf
 
 def print_header():
     class colors:
@@ -256,23 +255,23 @@ def setting_valid(line, setting):
                         system('clear') #Clear the screen
                         line[1] = settings_dict[setting]
                         line = ' '.join(line)
-                        modified_list.append(line)
+                        modified_list.append(line+'\n')
                     elif user_choice == 'False':
                         system('clear')
                         print(f'We will skip {line[0]} for now.')
                         time.sleep(1.5)
                         line = ' '.join(line)
-                        modified_list.append(line)
+                        modified_list.append(line+'\n')
                         system('clear')
                     elif user_choice == 'Error':
                         print(f'We will skip {line[0]} for now.')
                         time.sleep(1.5)
                         line = ' '.join(line)
-                        modified_list.append(line)
+                        modified_list.append(line+'\n')
                         system('clear')
             else:
                 line = ' '.join(line)
-                modified_list.append(line)
+                modified_list.append(line+'\n')
 
 
 def get_settings():
@@ -317,7 +316,6 @@ def search():
 
 def write_file(in_list, filename):
     global found_directories
-    conf_backup()
     for each_dir in found_directories:#.splitlines():
         if filename in each_dir:
             with open(each_dir, "w") as copy: #note that the copy file location does not need to exist before running
@@ -344,6 +342,8 @@ def split_list():
 def main_program():
     global current_version
     global found_directories
+    global apache_conf
+    global security_conf
     if args.change:
         prog_bar.total = 43003
     else:
@@ -353,13 +353,14 @@ def main_program():
     
     find_dir()
     if args.change:
+        #conf_backup()
         try:
-            filehandle = open(found_directories[0], 'w' )
+            filehandle = open(found_directories[0], 'a')
             filehandle.close()
         except IOError:
             system('clear') #Clear the screen
             sys.exit( 'Change option requires elevated priveledges.\nPlease run as root to use this option.') 
-    
+
     prog_bar.PrintMe()
     get_installed_ver()
     get_current_ver()
@@ -376,6 +377,7 @@ def main_program():
         report() #Print the report if requested
     
     if args.change:
+        conf_backup()
         split_list()
         write_file(security_conf,'security.conf')
         write_file(apache_conf,'apache2.conf')
@@ -383,4 +385,3 @@ def main_program():
 
 if __name__ == "__main__":
     main_program() 
-
