@@ -53,19 +53,6 @@ the most recent release
 
 
 
-  Server-Info  
-=================
-
-Displays information about the Apache configuration when the /server-info page is accessed from 
-http://www.example.com/server-info. This could potentially include sensitive information about 
-server settings such as the server version, system paths, database names, library information, etc. 
-This should be commented out to avoid providing additional information on server systems to threat 
-actors.
-
-Apache_Tester checks for the “<Location /server-info>” setting and will commented it out.
-
-
-
   Signature  
 ===============
 
