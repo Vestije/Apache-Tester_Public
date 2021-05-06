@@ -10,7 +10,7 @@ import subprocess
 import argparse
 from shutil import copyfile
 
-class ProgressBar:
+class ProgressBar: # Print progress bar while files are being searched through
     """
     @Properties:
     iteration       - Required  : current iteration (Int)
@@ -39,10 +39,10 @@ class ProgressBar:
     def PrintMe(self):
         self.iteration += 1
         if self.iteration < self.total:
-            percent = ("{0:." + str(self.decimals) + "f}").format(100 * (self.iteration / float(self.total))) #Set the current completion percentage
-            filledLength = int(self.length * self.iteration // self.total) #Get the ammount the bar should be filled
+            percent = ("{0:." + str(self.decimals) + "f}").format(100 * (self.iteration / float(self.total))) # Set the current completion percentage
+            filledLength = int(self.length * self.iteration // self.total) # Get the ammount the bar should be filled
             bar = self.fill * filledLength + '-' * ((self.length - filledLength)-1) # Fill the bar with the completed blocks and - for uncompleted blocks
-            print(f'{self.prefix} |{bar}| {percent}% {self.suffix}', end = self.printEnd) #Print the formatted progress bar
+            print(f'{self.prefix} |{bar}| {percent}% {self.suffix}', end = self.printEnd) # Print the formatted progress bar
         elif self.iteration > self.total:
             self.iteration = self.total - 1 
         else:
@@ -50,7 +50,7 @@ class ProgressBar:
         time.sleep(self.sleeping)
         
 
-
+# Program arguments and descriptions
 apache_parser = argparse.ArgumentParser(prog='Apache Configuration Tester',description='Check if Apache configuration is up to best practices standard.')
 apache_parser.add_argument('-c','--change', help='Allows the script to automatically change settings to match best practices.', action='store_true')
 apache_parser.add_argument('-p','--printReport', help='Prints a report showing the items meeting industry best practices, followed by those that don\'t.', action='store_true')
@@ -63,15 +63,15 @@ prog_bar = ProgressBar()
 correct = []
 incorrect = []
 settings_dict = {}
-current_version = ''
-installed_version = ''
-modified_list = []
-found_directories = [] # blank variable to add found directories too
-apache_conf = []
-security_conf = []
+current_version = '' # store newest version of apache avaliable online
+installed_version = '' # store current version of apache on the host machine
+modified_list = [] # store copy of configuration files that includes edited options if change argument is used
+found_directories = [] # store all found directories 
+apache_conf = [] # store apache.conf or http.conf files after modified_list is split
+security_conf = [] # store security.conf files after modified_list is split
 
 
-def find_dir():
+def find_dir(): # locates directories which store apache server files and stores them in a list
     global found_directories 
     global prog_bar
     for dirpath, dirnames, filenames in os.walk("/"): # ----> use os.walk to look through each directory
@@ -85,7 +85,7 @@ def find_dir():
                 found_directories.append(os.path.join(dirpath, filename)) # add found files to the list 
 
 
-def strip_ver(version_string):
+def strip_ver(version_string): # strips string so only version number is left
     output = ''
     for ch in version_string:
         if ch.isdigit():
@@ -95,14 +95,14 @@ def strip_ver(version_string):
     return output
 
 
-def get_installed_ver():
+def get_installed_ver(): # uses subprocess to find the current installed version of apache
     global installed_version
     global found_directories
     version_info = ''
 
     for each_dir in found_directories:
         if 'apache2.conf' in each_dir:
-            process1 = subprocess.run(['apache2', '-v'], capture_output=True) # ----> subprocess version; run the subprocess, capture output
+            process1 = subprocess.run(['apache2', '-v'], capture_output=True) # run the subprocess, capture output
             apache_output = process1.stdout.decode()
             list_apache_output = apache_output.split('\n')    
             for line in list_apache_output:
@@ -111,17 +111,17 @@ def get_installed_ver():
             installed_version = strip_ver(version_info)
             break
         elif 'httpd.conf' in each_dir:
-            process2 = subprocess.run(['httpd', '-v'], capture_output=True) # ----> subprocess version; run the subprocess, capture output
-            httpd_output = process2.stdout.decode() # ----> subprocess version; print standard output and decode from bytes
+            process2 = subprocess.run(['httpd', '-v'], capture_output=True) # run the subprocess, capture output
+            httpd_output = process2.stdout.decode() # print standard output and decode from bytes
             list_httpd_output = httpd_output.split('\n')
             for line in list_httpd_output:
                 if 'version' in line:
-                    version_info += line#----->
+                    version_info += line
             installed_version = strip_ver(version_info)
             break
 
 
-def compare_versions():
+def compare_versions(): # compare the installed version of apache on the host server to the newest update version
     global current_version
     global installed_version
     if current_version == installed_version:
@@ -130,41 +130,41 @@ def compare_versions():
         return False
 
 
-def get_current_ver():
+def get_current_ver(): # get the version number of the newest apache version from apache website
     global current_version
     process1 = requests.get('https://downloads.apache.org/httpd/')
     webtext = process1.text
     current_version = (webtext.split('IS-'))[1].split('\"')[0]
 
 
-def print_list(theList):
-    for line in theList: #Loop through the list
-        print('{: ^100}'.format(line)) #Print each line
+def print_list(theList): # formatting
+    for line in theList: 
+        print('{: ^100}'.format(line)) 
 
 
 def conf_backup():
     global found_directories
-    current_dir = os.path.dirname(os.path.realpath(__file__)) #current directory path of backup.py    
-    if os.path.isdir(current_dir + '/backup') == False: #checks if there is a backup folder
-        os.mkdir(current_dir + '/backup') #makes a backup folder
+    current_dir = os.path.dirname(os.path.realpath(__file__)) # current directory path of backup.py    
+    if os.path.isdir(current_dir + '/backup') == False: # checks if there is a backup folder
+        os.mkdir(current_dir + '/backup') # makes a backup folder
     for item in found_directories:
         if item.endswith('security.conf'):
-            if path.exists( current_dir + '/backup/security.original.back') == False:  #checks if security.original.back exists
-                copyfile(item,current_dir + '/backup/security.original.back') #copy of security.conf
-            elif path.exists( current_dir + '/backup/security.original.back') == True:  #checks if security.original.back exists
-                copyfile(item,current_dir + '/backup/security.updated.back') #copy of security.conf
+            if path.exists( current_dir + '/backup/security.original.back') == False: # checks if security.original.back exists
+                copyfile(item,current_dir + '/backup/security.original.back') # copy of security.conf
+            elif path.exists( current_dir + '/backup/security.original.back') == True: # checks if security.original.back exists
+                copyfile(item,current_dir + '/backup/security.updated.back') # copy of security.conf
         if item.endswith('apache2.conf'):
-            if path.exists( current_dir + '/backup/apache2.original.back') == False:  #checks if security.original.back exists
-                copyfile(item,current_dir + '/backup/apache2.original.back') #copy of security.conf
-            elif path.exists( current_dir + '/backup/apache2.original.back') == True:  #checks if security.original.back exists
-                copyfile(item,current_dir + '/backup/apache2.updated.back') #copy of security.conf
+            if path.exists( current_dir + '/backup/apache2.original.back') == False: # checks if security.original.back exists
+                copyfile(item,current_dir + '/backup/apache2.original.back') # copy of security.conf
+            elif path.exists( current_dir + '/backup/apache2.original.back') == True: # checks if security.original.back exists
+                copyfile(item,current_dir + '/backup/apache2.updated.back') # copy of security.conf
         if item.endswith('httpd.conf'):
-            if path.exists( current_dir + '/backup/httpd.original.back') == False:  #checks if security.original.back exists
-                copyfile(item,current_dir + '/backup/httpd.original.back') #copy of security.conf
-            elif path.exists( current_dir + '/backup/httpd.original.back') == True:  #checks if security.original.back exists
-                copyfile(item,current_dir + '/backup/httpd.updated.back') #copy of security.conf
+            if path.exists( current_dir + '/backup/httpd.original.back') == False: # checks if security.original.back exists
+                copyfile(item,current_dir + '/backup/httpd.original.back') # copy of security.conf
+            elif path.exists( current_dir + '/backup/httpd.original.back') == True: # checks if security.original.back exists
+                copyfile(item,current_dir + '/backup/httpd.updated.back') # copy of security.conf
 
-def print_header():
+def print_header(): # print report header image and modify text color 
     class colors:
         #RED = '\033[31m'
         ENDC = '\033[m'
@@ -183,36 +183,36 @@ def print_header():
     print (colors.GREEN + '-'*100 + colors.ENDC)
     print (colors.GREEN + '-'*100 + colors.ENDC)
 
-    sys.stdout.write('\033[1;34m') #make all following text blue
+    sys.stdout.write('\033[1;34m') # make all following text blue
 
 
-def report():
+def report(): 
     print_header()
     global correct
     global incorrect
-    #Print the settings that are set to recommended settings
+    # print the settings that are set to recommended settings
     print('{: ^100}'.format('The following settings are set to the recommended setting:'))
     print('\n')
     if not correct: #if the list is empty
-        print('{: ^100}'.format('--NONE--\n')) #Print no settings are set to recommended settings
+        print('{: ^100}'.format('--NONE--\n')) # print no settings are set to recommended settings
 
-    else: #Print the list
-        print_list(correct) #Print Correct list
-        print('\n'*2) #Print a new line after all the lines in the list
+    else: # print the list
+        print_list(correct) # print Correct list
+        print('\n'*2) # print a new line after all the lines in the list
 
-    #Print the settings that are not set to the recommended setting
+    # print the settings that are not set to the recommended setting
     print('{: ^100}'.format('The following settings are not set to the recommended setting:'))
     print('\n')
-    if not incorrect: #If the list is empty
-        print('{: ^100}'.format('--NONE--\n')) #Print no settings are set incorrectly.
-    else: #Print the list
-        print_list(incorrect) #Print Incorrect list
+    if not incorrect: # if the list is empty
+        print('{: ^100}'.format('--NONE--\n')) # print no settings are set incorrectly.
+    else: # print the list
+        print_list(incorrect) # print incorrect list
         print('\n'*5)
 
 
 def user_input(option, rec_setting, old_setting):
-    answer_yes = ['yes','y'] #list all possible inputs for yes
-    answer_no = ['no','n'] #list all possible inputs for no
+    answer_yes = ['yes','y'] # list all possible inputs for yes
+    answer_no = ['no','n'] # list all possible inputs for no
     choice = input(f'\n\nWould you like to change {option} from {old_setting.strip()} to the recommended setting of: {rec_setting}? <y/n>: ') #statement placed in choice variable
 
     if choice.lower() in answer_yes:
@@ -225,34 +225,34 @@ def user_input(option, rec_setting, old_setting):
         return 'Error'
 
 
-def file_len(in_file):
+def file_len(in_file): # count number of lines that will be read from configuration files, used to set the end length of the progress bar
     count = 0
     with open(in_file, 'r') as f:
         count = len(f.readlines())
     return count + 1
 
 
-def setting_valid(line, setting):
+def setting_valid(line, setting): # check lines from search function that meet recommended settings criteria. 
     global correct
     global incorrect
     global modified_list
     if setting != 'Serverversion':    
-        line = line.split(' ') #If line is a setting split line using on the space
-        if settings_dict[setting] == line[1].strip(): #If it is the correct setting check if the value matches the recommended
-            if args.verbose: #Print the following line if the verbose option was requested
+        line = line.split(' ') # if line is a setting split line using on the space
+        if settings_dict[setting] == line[1].strip(): # if it is the correct setting check if the value matches the recommended
+            if args.verbose: # print the following line if the verbose option was requested
                 print(f'\rFound setting:{setting} set to the recommended setting of: {settings_dict[setting]}'.ljust(100,' '))            
             correct.append(str.format('{0} is set to:{1}',setting.ljust(22),settings_dict[setting].rjust(10))) #If it does append to correct list
             line = ' '.join(line)
             modified_list.append(line)
-        else: #It doesn't match the recommended setting - append to incorrect list.
+        else: # it doesn't match the recommended setting - append to incorrect list.
             incorrect.append(str.format('{0} is set to :{1}, the recommended setting is: {2}', setting.ljust(22),line[1].strip().rjust(10),settings_dict[setting].rjust(10)))
-            if args.verbose: #Print the following line if the verbose option was requested
+            if args.verbose: # print the following line if the verbose option was requested
                 print(f'\rFound setting:{setting} set to: {line[1].strip()}.  The recommended setting is: {settings_dict[setting]}'.ljust(100,' '))
-            if args.change:
-                if not args.silent:
+            if args.change: # user input requests to change settings if change arument used without silent argument
+                if not args.silent: 
                     user_choice = user_input(line[0],settings_dict[setting], line[1])
                     if  user_choice == 'True':
-                        system('clear') #Clear the screen
+                        system('clear') # clear the screen
                         line[1] = settings_dict[setting]
                         line = ' '.join(line)
                         modified_list.append(line+'\n')
@@ -274,7 +274,7 @@ def setting_valid(line, setting):
                 modified_list.append(line+'\n')
 
 
-def get_settings():
+def get_settings(): # pull recommended settings from txt file
     global settings_dict
     global iteration
     global prog_bar
@@ -286,15 +286,15 @@ def get_settings():
         settings_dict[setting[0]] = setting[1].strip()
 
 
-def search():
+def search(): # check lines of configuration files, add to new modifed list
     global settings_dict
     global modified_list
 
-    if prog_bar.iteration < prog_bar.total: #Check if the iteration variable is less than or equal to the total number of iterations
+    if prog_bar.iteration < prog_bar.total: # check if the iteration variable is less than or equal to the total number of iterations
         prog_bar.PrintMe()
-    with open(found_directories[0],'r') as conf_file: #Open the file to search for settings
-        for line in conf_file.readlines(): #Loop through each line in the file looking for the current setting being searched for
-            if prog_bar.iteration < prog_bar.total: #Check if the iteration variable is less than or equal to the total number of iterations
+    with open(found_directories[0],'r') as conf_file: # open the file to search for settings
+        for line in conf_file.readlines(): # loop through each line in the file looking for the current setting being searched for
+            if prog_bar.iteration < prog_bar.total: # check if the iteration variable is less than or equal to the total number of iterations
                 prog_bar.PrintMe()
             if line[0] != '#' and line[0] != '\n' and line[0] != '<' and not line.startswith('	'):
                 if line.split(' ')[0] in settings_dict.keys():
@@ -303,10 +303,10 @@ def search():
                     modified_list.append(line)
             else:
                     modified_list.append(line) 
-        modified_list.append('~~~~~~~~~~')  # ----> separator between apache2/httpd and security.conf files.              
-        with open(found_directories[1],'r') as conf_file: #Open the file to search for settings
-            for line in conf_file.readlines(): #Loop through each line in the file looking for the current setting being searched for
-                if prog_bar.iteration < prog_bar.total: #Check if the iteration variable is less than or equal to the total number of iterations
+        modified_list.append('~~~~~~~~~~')  # separator between apache2/httpd and security.conf files.              
+        with open(found_directories[1],'r') as conf_file: # open the file to search for settings
+            for line in conf_file.readlines(): # ;oop through each line in the file looking for the current setting being searched for
+                if prog_bar.iteration < prog_bar.total: # check if the iteration variable is less than or equal to the total number of iterations
                     prog_bar.PrintMe()
                 if line[0] != '#' and line[0] != '\n' and line[0] != '<' and line.startswith:
                     setting_valid(line, line.split(' ')[0])
@@ -314,16 +314,16 @@ def search():
                     modified_list.append(line)                              
 
 
-def write_file(in_list, filename):
+def write_file(in_list, filename): # 
     global found_directories
-    for each_dir in found_directories:#.splitlines():
+    for each_dir in found_directories:
         if filename in each_dir:
-            with open(each_dir, "w") as copy: #note that the copy file location does not need to exist before running
-                for line in in_list: #reads each line in the file
+            with open(each_dir, "w") as copy: # note that the copy file location does not need to exist before running
+                for line in in_list: # reads each line in the file
                     copy.write(line) 
 
 
-def split_list():
+def split_list(): # splits modified list into apache_conf and security_conf files
     global modified_list
     global apache_conf
     global security_conf
@@ -339,7 +339,7 @@ def split_list():
             security_conf.append(line)
 
 
-def main_program():
+def main_program(): # main program ran if __name__ == "__main__"
     global current_version
     global found_directories
     global apache_conf
@@ -348,13 +348,12 @@ def main_program():
         prog_bar.total = 43003
     else:
         prog_bar.total = 38779
-    system('clear') #Clear the screen
+    system('clear') # clear the screen
     sys.stdout.write('\033[1;34m')
     
     find_dir()
     if args.change:
-        #conf_backup()
-        try:
+        try: # checks if write privilages are avaliable with current permissions, error message if we need additional permissions to run change arugment
             filehandle = open(found_directories[0], 'a')
             filehandle.close()
         except IOError:
@@ -366,22 +365,23 @@ def main_program():
     get_current_ver()
 
     if current_version == installed_version:
-        correct.append(str.format('{0} installed:{1}','Apache Version'.ljust(22),current_version.rjust(10))) #If it does append to correct list
+        correct.append(str.format('{0} installed:{1}','Apache Version'.ljust(22),current_version.rjust(10))) # if it does append to correct list
     else:
         incorrect.append(str.format('{0}installed :{1}, the current version is: {2}', 'Apache Version'.ljust(23),installed_version.rjust(10),current_version.rjust(14)))
     
-    get_settings() #Get the recommended settings from the Recommended settings text file
-    search() #Search the Configuration files
+    get_settings() # get the recommended settings from the Recommended settings text file
+    search() # search the Configuration files
     
-    if args.printReport: #Check if user requested a report
-        report() #Print the report if requested
+    if args.printReport: # check if user requested a report
+        report() # print the report if requested
     
     if args.change:
         conf_backup()
         split_list()
         write_file(security_conf,'security.conf')
         write_file(apache_conf,'apache2.conf')
-    #print(prog_bar.iteration)
 
+        
+        
 if __name__ == "__main__":
     main_program() 
